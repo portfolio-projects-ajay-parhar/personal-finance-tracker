@@ -18,6 +18,13 @@ export interface Transaction {
   createdAt: string; // ISO timestamp
 }
 
+export interface CategoryFormData {
+  name: string;
+  type: TransactionType;
+  color: string;
+  icon: string;
+}
+
 export interface TransactionFormData {
   amount: string;
   description: string;
