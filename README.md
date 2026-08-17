@@ -1,73 +1,76 @@
-# React + TypeScript + Vite
+# Personal Finance Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A client-side web app for tracking income and expenses. Browse a monthly dashboard, manage a transaction ledger, and organize custom categories — all stored in the browser.
 
-Currently, two official plugins are available:
+Data never leaves your device. There is no backend or account system.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Dashboard** — Month picker with income, expenses, net, and savings rate. Bar chart for monthly income vs expense, pie chart for expense categories, and a recent-activity list.
+- **Transactions** — Add, edit, and delete income or expense entries. Filter by type, category, date range, and description; sort by date, amount, or description.
+- **Categories** — Default income and expense categories plus custom ones (name, color, icon). Categories in use cannot be deleted.
+- **Demo ledger** — First visit seeds sample transactions so charts and lists are populated. A banner lets you clear the sample data without removing anything you added.
+- **Light / dark theme** — Preference is saved locally.
+- **Responsive layout** — Sidebar on desktop, bottom navigation on small screens.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+- React 19 and TypeScript
+- Vite
+- React Router
+- Tailwind CSS
+- Recharts
+- React Hook Form, Zod, and `@hookform/resolvers`
+- date-fns, lucide-react, uuid
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+State lives in React context. Persistence uses `localStorage`.
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+## Getting started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Requires [Node.js](https://nodejs.org/) 20 or later.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+git clone https://github.com/portfolio-projects-ajay-parhar/personal-finance-tracker.git
+cd personal-finance-tracker
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open the URL Vite prints (usually `http://localhost:5173`).
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+npm run build      # production build
+npm run preview    # serve the production build
+npm run lint
+npm run format     # Prettier
 ```
+
+## How data is stored
+
+Keys in `localStorage`:
+
+| Key | Purpose |
+| --- | --- |
+| `finance_tracker_transactions` | Transaction list |
+| `finance_tracker_categories` | Category list |
+| `finance_tracker_theme` | Light or dark |
+| `finance_tracker_sidebar_collapsed` | Sidebar state |
+| `finance_tracker_mock_seeded` | Whether demo transactions have already been seeded |
+
+Clearing site data for this origin removes everything. Clearing sample data from the banner only removes seeded demo transactions.
+
+## Project layout
+
+```
+src/
+  pages/           Dashboard, Transactions, Categories
+  components/      Layout, charts, modals
+  context/         Theme, categories, transactions
+  data/            Default categories, icons, mock ledger
+  utils/           Storage, filters, formatters, dashboard stats
+  types/           Shared TypeScript types
+```
+
+## License
+
+Private / personal project. Not licensed for reuse unless you add a license file.
