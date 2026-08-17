@@ -2,6 +2,7 @@
 
 /* ===== CUSTOM PROPERTIES ===== */
 :root {
+  color-scheme: light;
   --color-primary: #3b82f6;
   --color-primary-hover: #2563eb;
   --color-income: #10b981;
@@ -19,10 +20,13 @@
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-danger: #dc2626;
   --color-danger-hover: #b91c1c;
+  --color-warning: #d97706;
+  --color-warning-bg: #fef3c7;
 }
 
 /* ===== DARK MODE VARIABLES ===== */
 .dark {
+  color-scheme: dark;
   --color-primary: #60a5fa;
   --color-primary-hover: #3b82f6;
   --color-income: #34d399;
@@ -40,6 +44,8 @@
   --color-shadow: rgba(0, 0, 0, 0.3);
   --color-danger: #f87171;
   --color-danger-hover: #ef4444;
+  --color-warning: #fbbf24;
+  --color-warning-bg: #78350f;
 }
 
 /* ===== BASE STYLES ===== */
@@ -80,4 +86,9 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-secondary);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.75;
 }

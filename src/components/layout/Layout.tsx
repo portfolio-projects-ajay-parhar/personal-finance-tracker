@@ -3,45 +3,37 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import MainContent from "./MainContent";
 import Footer from "./Footer";
-
-const getInitialTheme = () => {
-  if (typeof window === "undefined") return false;
-
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme) return savedTheme === "dark";
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
-};
+import BottomNav from "./BottomNav";
+import { getSidebarCollapsed, saveSidebarCollapsed } from "../../utils/storage";
 
 export default function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(getInitialTheme);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(getSidebarCollapsed);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+    saveSidebarCollapsed(sidebarCollapsed);
+  }, [sidebarCollapsed]);
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]">
-      <Header
-        onMenuClick={() => setSidebarOpen((prev) => !prev)}
-        darkMode={darkMode}
-        onToggleTheme={() => setDarkMode((prev) => !prev)}
-        sidebarOpen={sidebarOpen}
-      />
+      <Header sidebarCollapsed={sidebarCollapsed} />
 
       <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen((prev) => !prev)}
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed((prev) => !prev)}
       />
 
-      <div className="pt-16 lg:pl-72">
+      <div
+        className={`pt-16 pb-[calc(4rem+env(safe-area-inset-bottom))] transition-[padding] duration-300 ease-out lg:pb-0 ${
+          sidebarCollapsed ? "lg:pl-[4.5rem]" : "lg:pl-64"
+        }`}
+      >
         <div className="flex min-h-[calc(100vh-4rem)] flex-col">
           <MainContent />
           <Footer />
         </div>
       </div>
+
+      <BottomNav />
     </div>
   );
 }
