@@ -1,10 +1,13 @@
 import type { Transaction, Category, Theme } from '../types';
 import { defaultCategories } from '../data/defaultCategoris';
+import { buildMockTransactions } from '../data/mockTransactions';
 
 const STORAGE_KEYS = {
   TRANSACTIONS: 'finance_tracker_transactions',
   CATEGORIES: 'finance_tracker_categories',
   THEME: 'finance_tracker_theme',
+  SIDEBAR_COLLAPSED: 'finance_tracker_sidebar_collapsed',
+  MOCK_SEEDED: 'finance_tracker_mock_seeded',
 } as const;
 
 // Generic localStorage helpers
@@ -27,18 +30,51 @@ function setItem<T>(key: string, value: T): void {
   }
 }
 
-// Transactions
+// Transactions — seed demo ledger once when storage is empty
 export function getTransactions(): Transaction[] {
-  return getItem<Transaction[]>(STORAGE_KEYS.TRANSACTIONS, []);
+  try {
+    const item = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
+    const alreadySeeded = localStorage.getItem(STORAGE_KEYS.MOCK_SEEDED) === '1';
+    const parsed = item === null ? null : (JSON.parse(item) as Transaction[]);
+    const isEmpty = parsed === null || (Array.isArray(parsed) && parsed.length === 0);
+
+    if (!alreadySeeded && isEmpty) {
+      const seeded = buildMockTransactions();
+      setItem(STORAGE_KEYS.TRANSACTIONS, seeded);
+      localStorage.setItem(STORAGE_KEYS.MOCK_SEEDED, '1');
+      return seeded;
+    }
+
+    if (parsed === null || !Array.isArray(parsed)) return [];
+    return parsed;
+  } catch (error) {
+    console.error(`Error reading localStorage key "${STORAGE_KEYS.TRANSACTIONS}":`, error);
+    return [];
+  }
 }
 
 export function saveTransactions(transactions: Transaction[]): void {
   setItem(STORAGE_KEYS.TRANSACTIONS, transactions);
 }
 
-// Categories
+export function markMockSeedComplete(): void {
+  localStorage.setItem(STORAGE_KEYS.MOCK_SEEDED, '1');
+}
+
+// Categories — seed defaults once so IDs stay stable across reloads
 export function getCategories(): Category[] {
-  return getItem<Category[]>(STORAGE_KEYS.CATEGORIES, defaultCategories);
+  try {
+    const item = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
+    if (item === null) {
+      setItem(STORAGE_KEYS.CATEGORIES, defaultCategories);
+      return defaultCategories;
+    }
+    const parsed = JSON.parse(item) as Category[];
+    return Array.isArray(parsed) ? parsed : defaultCategories;
+  } catch (error) {
+    console.error(`Error reading localStorage key "${STORAGE_KEYS.CATEGORIES}":`, error);
+    return defaultCategories;
+  }
 }
 
 export function saveCategories(categories: Category[]): void {
@@ -52,6 +88,14 @@ export function getTheme(): Theme {
 
 export function saveTheme(theme: Theme): void {
   setItem(STORAGE_KEYS.THEME, theme);
+}
+
+export function getSidebarCollapsed(): boolean {
+  return getItem<boolean>(STORAGE_KEYS.SIDEBAR_COLLAPSED, false);
+}
+
+export function saveSidebarCollapsed(collapsed: boolean): void {
+  setItem(STORAGE_KEYS.SIDEBAR_COLLAPSED, collapsed);
 }
 
 // Clear all data
