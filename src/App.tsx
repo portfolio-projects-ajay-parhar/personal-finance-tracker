@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { CategoryProvider } from "./context/CategoryContext";
 import { TransactionProvider } from "./context/TransactionContext";
@@ -14,7 +14,7 @@ export default function App() {
       <CategoryProvider>
         <TransactionProvider>
           <ToastProvider>
-            <BrowserRouter>
+            <HashRouter>
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route index element={<Dashboard />} />
@@ -23,7 +23,7 @@ export default function App() {
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               </Routes>
-            </BrowserRouter>
+            </HashRouter>
           </ToastProvider>
         </TransactionProvider>
       </CategoryProvider>
